@@ -2,6 +2,9 @@ package lab5;
 
 import lab5.Utility.User;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 /**
@@ -13,7 +16,7 @@ public class Database {
 
     public static void main(String args[]){
         Database db = new Database();
-        User user = db.getUser(1);
+        User user = db.getUser(3);
         if(user != null)System.out.println(user.name);
         db.closeDB();
     }
@@ -33,10 +36,29 @@ public class Database {
 
     //TODO fazer hash
     public boolean createUser(String name, String password){
+        String pass = "";
         try{
+            MessageDigest md = null;
+            try {
+                md = MessageDigest.getInstance("SHA-256");
+                md.update(password.getBytes("UTF-16"));
+                byte[] byteData = md.digest();
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < byteData.length; i++) {
+                    sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+                }
+                pass = sb.toString();
+                System.out.println(pass);
+            } catch (NoSuchAlgorithmException e) {
+                System.out.println("Erro no algoritomo: " + e.getMessage());
+            } catch (UnsupportedEncodingException e) {
+                System.out.println("Erro ao encriptar password: " + e.getMessage());
+            }
+
+
             PreparedStatement insert = conn.prepareStatement("insert into Users(username, password) values(?,?)");
             insert.setString(1,name);
-            insert.setString(2,password);
+            insert.setString(2,pass);
             insert.addBatch();
 
             conn.setAutoCommit(false);
