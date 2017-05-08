@@ -34,28 +34,29 @@ public class Database {
         }
     }
 
-    //TODO fazer hash
-    public boolean createUser(String name, String password){
+    private String createHash(String password){
         String pass = "";
-        try{
-            MessageDigest md = null;
-            try {
-                md = MessageDigest.getInstance("SHA-256");
-                md.update(password.getBytes("UTF-16"));
-                byte[] byteData = md.digest();
-                StringBuffer sb = new StringBuffer();
-                for (int i = 0; i < byteData.length; i++) {
-                    sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-                }
-                pass = sb.toString();
-                System.out.println(pass);
-            } catch (NoSuchAlgorithmException e) {
-                System.out.println("Erro no algoritomo: " + e.getMessage());
-            } catch (UnsupportedEncodingException e) {
-                System.out.println("Erro ao encriptar password: " + e.getMessage());
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes("UTF-16"));
+            byte[] byteData = md.digest();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < byteData.length; i++) {
+                sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
             }
+            pass = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println("Erro no algoritomo: " + e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("Erro ao encriptar password: " + e.getMessage());
+        }
+        return pass;
+    }
 
-
+    public boolean createUser(String name, String password){
+        try{
+            String pass = createHash(password);
             PreparedStatement insert = conn.prepareStatement("insert into Users(username, password) values(?,?)");
             insert.setString(1,name);
             insert.setString(2,pass);
