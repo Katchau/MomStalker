@@ -18,20 +18,9 @@ public class Database {
 
     public static void main(String args[]){
         Database db = new Database();
-
-        db.createEvent("Festinha", 1, 2.0, 3.0);
-        Event e = db.getEvent(1);
-        if (e != null)
-            System.out.println(e.name + " " + e.userHost + " x=" + e.gps.x + " y=" + e.gps.y);
-        db.deleteEvent(1);
-        e = db.getEvent(1);
-        if(e != null){
-            System.out.println("Oops");
+        for (Event e: db.getFriendEvents(2)) {
+            System.out.println(e.name);
         }
-        else{
-            System.out.println("Yey");
-        }
-
         db.closeDB();
     }
 
@@ -258,6 +247,52 @@ public class Database {
             System.err.println("Getting event error: " + e.getMessage());
         }
         return event;
+    }
+
+    public ArrayList<Event> getEvents(int userId){
+        ArrayList<Event> events = new ArrayList<>();
+        try{
+            PreparedStatement insert = conn.prepareStatement("select * from Event where uhost = ?");
+            insert.setString(1,"" + userId);
+            ResultSet result = insert.executeQuery();
+            while(result.next()){
+                Event event = new Event(Integer.parseInt(result.getString("id")),
+                        userId,
+                        result.getString("name"),
+                        Double.parseDouble(result.getString("xCoord")),
+                        Double.parseDouble(result.getString("yCoord")));
+                events.add(event);
+            }
+            result.close();
+            insert.close();
+        } catch (SQLException e) {
+            System.err.println("Getting event error: " + e.getMessage());
+        }
+        return events;
+    }
+
+    public ArrayList<Event> getFriendEvents(int userId){
+        ArrayList<Event> events = new ArrayList<>();
+        String query = "select Event.* from Event inner join Amizade where (user1 = ? and user2 = uhost) or (user2 = ? and user1 = uhost)";
+        try{
+            PreparedStatement insert = conn.prepareStatement(query);
+            insert.setString(1,"" + userId);
+            insert.setString(2,"" + userId);
+            ResultSet result = insert.executeQuery();
+            while(result.next()){
+                Event event = new Event(Integer.parseInt(result.getString("id")),
+                        Integer.parseInt(result.getString("uHost")),
+                        result.getString("name"),
+                        Double.parseDouble(result.getString("xCoord")),
+                        Double.parseDouble(result.getString("yCoord")));
+                events.add(event);
+            }
+            result.close();
+            insert.close();
+        } catch (SQLException e) {
+            System.err.println("Getting event error: " + e.getMessage());
+        }
+        return events;
     }
 
     public boolean deleteEvent(int id){
