@@ -1,12 +1,12 @@
 package lab5;
 
-import lab5.Utility.Coordinates;
 import lab5.Utility.User;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * Created by jon on 08/05/2017.
@@ -17,12 +17,6 @@ public class Database {
 
     public static void main(String args[]){
         Database db = new Database();
-
-        db.updateCoordinates(1, 2.0, 3.0);
-        User u = db.getUser(1);
-        System.out.println(u.name);
-        System.out.println("x=" + u.gps.x + " y=" + u.gps.y);
-
         db.closeDB();
     }
 
@@ -52,9 +46,9 @@ public class Database {
             }
             pass = sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            System.err.println("Erro no algoritomo: " + e.getMessage());
+            System.err.println("Hashing Algorithm Error: " + e.getMessage());
         } catch (UnsupportedEncodingException e) {
-            System.err.println("Erro ao encriptar password: " + e.getMessage());
+            System.err.println("Hashing Error: " + e.getMessage());
         }
         return pass;
     }
@@ -98,23 +92,14 @@ public class Database {
             result.close();
             insert.close();
         } catch (SQLException e) {
-            System.err.println("Select Error: " + e.getMessage());
+            System.err.println("Getting User error: " + e.getMessage());
         }
         return user;
     }
 
-    public void closeDB(){
-        try {
-            stat.close();
-            conn.close();
-        } catch (SQLException e) {
-            System.err.println("Error: Closing DB");
-        }
-    }
-
     public boolean verifyLogin(String username, String password){
-        String iPass = "";
-        String rPass = "";
+        String iPass = "lol";
+        String rPass = "meque";
         try{
             PreparedStatement insert = conn.prepareStatement("select * from Users where username = ?");
             insert.setString(1,"" + username);
@@ -126,11 +111,9 @@ public class Database {
             result.close();
             insert.close();
         } catch (SQLException e) {
-            System.err.println("Select Error: " + e.getMessage());
+            System.err.println("Verify Error: " + e.getMessage());
         }
-        if (iPass.equals(rPass))
-            return true;
-        return false;
+        return iPass.equals(rPass);//triggered
     }
 
     public boolean updateCoordinates(int id, double x, double y){
@@ -151,5 +134,80 @@ public class Database {
             return false;
         }
         return true;
+    }
+
+    public boolean execSql(String sql, int id1, int id2, String errorMsg){
+        try{
+            PreparedStatement insert = conn.prepareStatement(sql);
+            insert.setString(1,""+id1);
+            insert.setString(2,""+id2);
+            insert.addBatch();
+
+            conn.setAutoCommit(false);
+            insert.executeBatch();
+            conn.setAutoCommit(true);
+            insert.close();
+        }
+        catch(SQLException e){
+            System.err.println(errorMsg + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public ArrayList<User> execSql2(String sql, int userId, String errorMsg){
+        ArrayList<User> users = new ArrayList<>();
+        try{
+            PreparedStatement insert = conn.prepareStatement(sql);
+            insert.setString(1,"" + userId);
+            insert.setString(2,"" + userId);
+            ResultSet result = insert.executeQuery();
+            while(result.next()){
+                int id1 = Integer.parseInt(result.getString("user1"));
+                int id2 = Integer.parseInt(result.getString("user2"));
+                int id = (id1 != userId) ? id1 : id2;
+                User user = getUser(id);
+                users.add(user);
+            }
+            result.close();
+            insert.close();
+        } catch (SQLException e) {
+            System.err.println(errorMsg + e.getMessage());
+        }
+        return users;
+    }
+
+
+    public boolean createFRequest(int id1, int id2){
+        return execSql("insert into FriendRequest(user1, user2) values(?,?)",id1,id2,"Create Request Error: ");
+    }
+
+    private boolean deleteFRequest(int id1, int id2){
+        return execSql("delete from FriendRequest where user1 = ? and user2 = ?",id1,id2,"Delete Request Error: ");
+    }
+
+    public ArrayList<User> getFRequests(int userId){
+        return execSql2("select * from FriendRequest where user1 = ? or user2 = ?",userId,"Get Request Error: ");
+    }
+
+    public boolean createAmizade(int id1, int id2) {
+        return deleteFRequest(id1, id2) && execSql("insert into Amizade(user1, user2) values(?,?)", id1, id2, "Create Amizade Error: ");
+    }
+
+    public boolean deleteAmizade(int id1, int id2) {
+        return execSql("delete from Amizade where user1 = ? and user2 = ?",id1,id2,"Delete Amizade Error: ");
+    }
+
+    public ArrayList<User> getAmizade(int userId){
+        return execSql2("select * from Amizade where user1 = ? or user2 = ?",userId,"Get Amizade Error: ");
+    }
+
+    public void closeDB(){
+        try {
+            stat.close();
+            conn.close();
+        } catch (SQLException e) {
+            System.err.println("Error: Closing DB");
+        }
     }
 }
