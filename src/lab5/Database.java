@@ -1,5 +1,6 @@
 package lab5;
 
+import lab5.Utility.Event;
 import lab5.Utility.User;
 
 import java.io.UnsupportedEncodingException;
@@ -17,6 +18,20 @@ public class Database {
 
     public static void main(String args[]){
         Database db = new Database();
+
+        db.createEvent("Festinha", 1, 2.0, 3.0);
+        Event e = db.getEvent(1);
+        if (e != null)
+            System.out.println(e.name + " " + e.userHost + " x=" + e.gps.x + " y=" + e.gps.y);
+        db.deleteEvent(1);
+        e = db.getEvent(1);
+        if(e != null){
+            System.out.println("Oops");
+        }
+        else{
+            System.out.println("Yey");
+        }
+
         db.closeDB();
     }
 
@@ -201,6 +216,68 @@ public class Database {
     public ArrayList<User> getAmizade(int userId){
         return execSql2("select * from Amizade where user1 = ? or user2 = ?",userId,"Get Amizade Error: ");
     }
+
+    public boolean createEvent(String name, int idUser, double xCoord, double yCoord){
+        try{
+
+            PreparedStatement insert = conn.prepareStatement("insert into Event(uHost, name, xCoord, yCoord) values(?, ?, ?, ?)");
+            insert.setString(1, ""+idUser);
+            insert.setString(2, name);
+            insert.setString(3, ""+xCoord);
+            insert.setString(4, ""+yCoord);
+            insert.addBatch();
+
+            conn.setAutoCommit(false);
+            insert.executeBatch();
+            conn.setAutoCommit(true);
+            insert.close();
+        }
+        catch(SQLException e){
+            System.err.println("Create Event Error: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public Event getEvent(int id){
+        Event event = null;
+        try{
+            PreparedStatement insert = conn.prepareStatement("select * from Event where id = ?");
+            insert.setString(1,"" + id);
+            ResultSet result = insert.executeQuery();
+            if(result.next()){
+                event = new Event(id,
+                        Integer.parseInt(result.getString("uHost")),
+                        result.getString("name"),
+                        Double.parseDouble(result.getString("xCoord")),
+                        Double.parseDouble(result.getString("yCoord")));
+            }
+            result.close();
+            insert.close();
+        } catch (SQLException e) {
+            System.err.println("Getting event error: " + e.getMessage());
+        }
+        return event;
+    }
+
+    public boolean deleteEvent(int id){
+        try{
+            PreparedStatement insert = conn.prepareStatement("delete from event where id = ?");
+            insert.setString(1,""+id);
+            insert.addBatch();
+
+            conn.setAutoCommit(false);
+            insert.executeBatch();
+            conn.setAutoCommit(true);
+            insert.close();
+        }
+        catch(SQLException e){
+            System.err.println("Deleting event error: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
 
     public void closeDB(){
         try {
