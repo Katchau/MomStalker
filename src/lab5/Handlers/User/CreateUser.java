@@ -4,29 +4,19 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import lab5.Database;
 import lab5.Handlers.ClientHandler;
-import lab5.Utility.User;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.sql.SQLException;
 
 /**
  * Created by jon on 13/05/2017.
  */
 public class CreateUser extends ClientHandler implements HttpHandler{
-    Database db;
 
     public CreateUser(){
         super("username,password");
-        try {
-            this.db = new Database();
-        } catch (SQLException e) {
-            System.err.println("Database Error: " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            System.err.println("Missing lib for SQLite!");
-        }
     }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         //same thing for post just change the method
@@ -42,14 +32,13 @@ public class CreateUser extends ClientHandler implements HttpHandler{
         String username = receivedParams.get("username");
         String password = receivedParams.get("password"); //não deve ser a melhor maneira passar uma password por aqui
 
-        String response = "";
-
-        if (db.createUser(username, password))
-            response = "Success";
-        else
-            response = "Fail";
-
-        //http://localhost:6969/getaids?cebolas=false&bananas=false
+        Database db = initiateDB();
+        if(db == null ){
+            dbError(httpExchange);
+            return;
+        }
+        String response = (db.createUser(username, password)) ? "Success" : "Fail";
+        db.closeDB();
         writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
     }
 }

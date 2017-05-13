@@ -7,26 +7,17 @@ import lab5.Handlers.ClientHandler;
 import lab5.Utility.User;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.sql.SQLException;
 
 /**
  * Created by jon on 13/05/2017.
  */
 public class GetUser extends ClientHandler implements HttpHandler{
-    Database db;
 
     public GetUser(){
         super("id");
-        try {
-            this.db = new Database();
-        } catch (SQLException e) {
-            System.err.println("Database Error: " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            System.err.println("Missing lib for SQLite!");
-        }
     }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         //same thing for post just change the method
@@ -40,11 +31,21 @@ public class GetUser extends ClientHandler implements HttpHandler{
         }
 
         int id = Integer.parseInt(receivedParams.get("id"));
-
+        System.out.println("lol " + id);
+        Database db = initiateDB();
+        if(db == null ){
+            dbError(httpExchange);
+            return;
+        }
         User u = db.getUser(id);
-
-        String response = "name=" + u.name + "\n" + "x=" + u.gps.x + "\n" + "y=" + u.gps.y;
-        //http://localhost:6969/getaids?cebolas=false&bananas=false
-        writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
+        db.closeDB();
+        if(u == null){
+            writeResponse(httpExchange,"No such user",HttpURLConnection.HTTP_NOT_FOUND);
+        }
+        else{
+            String response = "name=" + u.name;
+            if(u.gps != null)response += "x=" + u.gps.x + "y=" + u.gps.y;
+            writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
+        }
     }
 }

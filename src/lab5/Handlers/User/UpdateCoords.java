@@ -2,6 +2,7 @@ package lab5.Handlers.User;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import lab5.DBServer;
 import lab5.Database;
 import lab5.Handlers.ClientHandler;
 import lab5.Utility.User;
@@ -15,17 +16,9 @@ import java.sql.SQLException;
  * Created by jon on 13/05/2017.
  */
 public class UpdateCoords extends ClientHandler implements HttpHandler{
-    Database db;
 
     public UpdateCoords(){
         super("id,x,y");
-        try {
-            this.db = new Database();
-        } catch (SQLException e) {
-            System.err.println("Database Error: " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            System.err.println("Missing lib for SQLite!");
-        }
     }
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -43,14 +36,13 @@ public class UpdateCoords extends ClientHandler implements HttpHandler{
         double x = Double.parseDouble(receivedParams.get("x"));
         double y = Double.parseDouble(receivedParams.get("y"));
 
-        String response = "";
-
-        if (db.updateCoordinates(id, x, y))
-            response = "Success";
-        else
-            response = "Fail";
-
-        //http://localhost:6969/getaids?cebolas=false&bananas=false
+        Database db = initiateDB();
+        if(db == null ){
+            dbError(httpExchange);
+            return;
+        }
+        String response = (db.updateCoordinates(id, x, y)) ? "Success" : "Fail";
+        db.closeDB();
         writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
     }
 }

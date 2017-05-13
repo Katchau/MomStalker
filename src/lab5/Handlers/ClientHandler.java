@@ -1,9 +1,13 @@
 package lab5.Handlers;
 
 import com.sun.net.httpserver.HttpExchange;
+import lab5.Database;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,6 +28,22 @@ public class ClientHandler{
 
     protected ClientHandler(String params){
         expectedParams = new ArrayList<>(Arrays.asList(params.split(",")));
+    }
+
+    protected Database initiateDB(){
+        try{
+            Database db = new Database();
+            return db;
+        }catch(SQLException e){
+            System.err.println("Database Error: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            System.err.println("Missing lib for SQLite!");
+        }
+        return null;
+    }
+
+    protected void dbError(HttpExchange httpExchange) throws IOException{
+        writeResponse(httpExchange,"Couldn't access db!", HttpURLConnection.HTTP_INTERNAL_ERROR);
     }
 
     protected boolean validRequest(String request){
