@@ -1,10 +1,10 @@
-package lab5.Handlers.User;
+package lab5.Handlers.Event;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import lab5.Database;
 import lab5.Handlers.ClientHandler;
-import lab5.Utility.User;
+import lab5.Utility.Event;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -12,9 +12,9 @@ import java.net.HttpURLConnection;
 /**
  * Created by jon on 13/05/2017.
  */
-public class GetUser extends ClientHandler implements HttpHandler{
+public class GetEvent extends ClientHandler implements HttpHandler{
 
-    public GetUser(){
+    public GetEvent(){
         super("id");
     }
 
@@ -31,19 +31,20 @@ public class GetUser extends ClientHandler implements HttpHandler{
         }
 
         int id = Integer.parseInt(receivedParams.get("id"));
+
         Database db = initiateDB();
         if(db == null ){
             dbError(httpExchange);
             return;
         }
-        User u = db.getUser(id);
+        Event e = db.getEvent(id);
         db.closeDB();
-        if(u == null){
-            writeResponse(httpExchange,"No such user",HttpURLConnection.HTTP_NOT_FOUND);
+
+        if(e == null){
+            writeResponse(httpExchange,"No such event",HttpURLConnection.HTTP_NOT_FOUND);
         }
         else{
-            String response = "name=" + u.name;
-            if(u.gps != null)response += "&x=" + u.gps.x + "&y=" + u.gps.y;
+            String response = "name=" + e.name + "&host=" + e.userHost + "&x=" + e.gps.x + "&y=" + e.gps.y;
             writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
         }
     }

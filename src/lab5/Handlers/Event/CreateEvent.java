@@ -1,10 +1,9 @@
-package lab5.Handlers.User;
+package lab5.Handlers.Event;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import lab5.Database;
 import lab5.Handlers.ClientHandler;
-import lab5.Utility.User;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -12,10 +11,10 @@ import java.net.HttpURLConnection;
 /**
  * Created by jon on 13/05/2017.
  */
-public class GetUser extends ClientHandler implements HttpHandler{
+public class CreateEvent extends ClientHandler implements HttpHandler{
 
-    public GetUser(){
-        super("id");
+    public CreateEvent(){
+        super("name,idhost,x,y");
     }
 
     @Override
@@ -30,21 +29,18 @@ public class GetUser extends ClientHandler implements HttpHandler{
             writeResponse(httpExchange,"Bad Parameters!",HttpURLConnection.HTTP_NOT_ACCEPTABLE);//no clue what error to pick xD
         }
 
-        int id = Integer.parseInt(receivedParams.get("id"));
+        String name = receivedParams.get("name");
+        int idUser = Integer.parseInt(receivedParams.get("idhost"));
+        double x = Double.parseDouble(receivedParams.get("x"));
+        double y = Double.parseDouble(receivedParams.get("y"));
+
         Database db = initiateDB();
         if(db == null ){
             dbError(httpExchange);
             return;
         }
-        User u = db.getUser(id);
+        String response = (db.createEvent(name, idUser, x, y)) ? "Success" : "Fail";
         db.closeDB();
-        if(u == null){
-            writeResponse(httpExchange,"No such user",HttpURLConnection.HTTP_NOT_FOUND);
-        }
-        else{
-            String response = "name=" + u.name;
-            if(u.gps != null)response += "&x=" + u.gps.x + "&y=" + u.gps.y;
-            writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
-        }
+        writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
     }
 }

@@ -87,7 +87,23 @@ public class Database {
         return user;
     }
 
-    public boolean verifyLogin(String username, String password){
+    public int getUserID(String username){
+        try{
+            PreparedStatement insert = conn.prepareStatement("select * from Users where username = ?");
+            insert.setString(1, username);
+            ResultSet result = insert.executeQuery();
+            if(result.next()){
+                return Integer.parseInt(result.getString("id"));
+            }
+            result.close();
+            insert.close();
+        } catch (SQLException e) {
+            System.err.println("Getting User error: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public int verifyLogin(String username, String password){
         String iPass = "lol";
         String rPass = "meque";
         try{
@@ -103,7 +119,11 @@ public class Database {
         } catch (SQLException e) {
             System.err.println("Verify Error: " + e.getMessage());
         }
-        return iPass.equals(rPass);//triggered
+
+        if (iPass.equals(rPass)){
+            return getUserID(username);
+        }
+        return -1;
     }
 
     public boolean updateCoordinates(int id, double x, double y){

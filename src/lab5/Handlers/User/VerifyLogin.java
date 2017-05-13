@@ -41,7 +41,7 @@ public class VerifyLogin extends ClientHandler implements HttpHandler{
             dbError(httpExchange);
             return;
         }
-        String response = (db.verifyLogin(username, password)) ? "Success" : "Fail";
+        String response = "" + db.verifyLogin(username, password);
         db.closeDB();
         writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
     }

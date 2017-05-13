@@ -1,20 +1,21 @@
-package lab5.Handlers.User;
+package lab5.Handlers.Event;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import lab5.Database;
 import lab5.Handlers.ClientHandler;
-import lab5.Utility.User;
+import lab5.Utility.Event;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 
 /**
  * Created by jon on 13/05/2017.
  */
-public class GetUser extends ClientHandler implements HttpHandler{
+public class GetFriendsEvents extends ClientHandler implements HttpHandler{
 
-    public GetUser(){
+    public GetFriendsEvents(){
         super("id");
     }
 
@@ -30,20 +31,25 @@ public class GetUser extends ClientHandler implements HttpHandler{
             writeResponse(httpExchange,"Bad Parameters!",HttpURLConnection.HTTP_NOT_ACCEPTABLE);//no clue what error to pick xD
         }
 
-        int id = Integer.parseInt(receivedParams.get("id"));
+        int userID = Integer.parseInt(receivedParams.get("id"));
+
         Database db = initiateDB();
         if(db == null ){
             dbError(httpExchange);
             return;
         }
-        User u = db.getUser(id);
+        ArrayList<Event> events = db.getFriendEvents(userID);
         db.closeDB();
-        if(u == null){
-            writeResponse(httpExchange,"No such user",HttpURLConnection.HTTP_NOT_FOUND);
+        String response = "";
+
+        if(events.size() == 0){
+            writeResponse(httpExchange,"Sem Eventos",HttpURLConnection.HTTP_NOT_FOUND);
         }
         else{
-            String response = "name=" + u.name;
-            if(u.gps != null)response += "&x=" + u.gps.x + "&y=" + u.gps.y;
+            for(int i=0; i < events.size(); i++){
+                Event e = events.get(i);
+                response += "name=" + e.name + "host=" + e.userHost + "x=" + e.gps.x + "y=" + e.gps.y + "\n";
+            }
             writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
         }
     }
