@@ -87,25 +87,10 @@ public class Database {
         return user;
     }
 
-    public int getUserID(String username){
-        try{
-            PreparedStatement insert = conn.prepareStatement("select * from Users where username = ?");
-            insert.setString(1, username);
-            ResultSet result = insert.executeQuery();
-            if(result.next()){
-                return Integer.parseInt(result.getString("id"));
-            }
-            result.close();
-            insert.close();
-        } catch (SQLException e) {
-            System.err.println("Getting User error: " + e.getMessage());
-        }
-        return -1;
-    }
-
     public int verifyLogin(String username, String password){
         String iPass = "lol";
         String rPass = "meque";
+        int id = -1;
         try{
             PreparedStatement insert = conn.prepareStatement("select * from Users where username = ?");
             insert.setString(1,"" + username);
@@ -113,17 +98,17 @@ public class Database {
             if(result.next()){
                 iPass = createHash(password);
                 rPass = result.getString("password");
+                id = Integer.parseInt(result.getString("id"));
             }
             result.close();
             insert.close();
         } catch (SQLException e) {
             System.err.println("Verify Error: " + e.getMessage());
         }
-
         if (iPass.equals(rPass)){
-            return getUserID(username);
+            return id;
         }
-        return -1;
+        else return -1;
     }
 
     public boolean updateCoordinates(int id, double x, double y){
@@ -192,7 +177,7 @@ public class Database {
         return execSql("insert into FriendRequest(user1, user2) values(?,?)",id1,id2,"Create Request Error: ");
     }
 
-    private boolean deleteFRequest(int id1, int id2){
+    public boolean deleteFRequest(int id1, int id2){
         return execSql("delete from FriendRequest where user1 = ? and user2 = ?",id1,id2,"Delete Request Error: ");
     }
 
@@ -208,7 +193,7 @@ public class Database {
         return execSql("delete from Amizade where user1 = ? and user2 = ?",id1,id2,"Delete Amizade Error: ");
     }
 
-    public ArrayList<User> getAmizade(int userId){
+    public ArrayList<User> getAmizades(int userId){
         return execSql2("select * from Amizade where user1 = ? or user2 = ?",userId,"Get Amizade Error: ");
     }
 

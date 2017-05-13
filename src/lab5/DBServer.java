@@ -2,11 +2,16 @@ package lab5;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.sql.SQLException;
 
 import com.sun.net.httpserver.*;
 import lab5.Handlers.*;
 import lab5.Handlers.Event.*;
+import lab5.Handlers.Friend.AddFriend;
+import lab5.Handlers.Friend.DeleteFriend;
+import lab5.Handlers.Friend.GetFriends;
+import lab5.Handlers.Request.CreateRequest;
+import lab5.Handlers.Request.DeleteRequest;
+import lab5.Handlers.Request.GetRequests;
 import lab5.Handlers.User.*;
 
 public class DBServer {
@@ -29,6 +34,12 @@ public class DBServer {
 			server.createContext("/deleteevent",new DeleteEvent());
 			server.createContext("/friendsevents",new GetFriendsEvents());
 			server.createContext("/myevents",new GetUserEvents());
+			server.createContext("/getrequests",new GetRequests());
+			server.createContext("/createrequest",new CreateRequest());
+			server.createContext("/deleterequest",new DeleteRequest());
+			server.createContext("/getfriends",new GetFriends());
+			server.createContext("/addfriend",new AddFriend());
+			server.createContext("/deletefriend",new DeleteFriend());
 			server.createContext("/giru",new Barbosa());
 			System.out.println("Server Started!");
 			server.start();
