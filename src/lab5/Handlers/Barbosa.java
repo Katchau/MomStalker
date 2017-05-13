@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 
 /**
  * Created by alcin on 08/05/2017.
@@ -19,7 +20,7 @@ public class Barbosa implements HttpHandler {
         try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))){
             byte [] buffer  = new byte [(int)file.length()];
             bis.read(buffer, 0, buffer.length);
-            httpExchange.sendResponseHeaders(200, file.length());
+            httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, file.length());
             OutputStream os = httpExchange.getResponseBody();
             os.write(buffer,0,buffer.length);
             os.close();

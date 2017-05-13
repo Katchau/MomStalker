@@ -16,25 +16,11 @@ public class Database {
     private Connection conn;
     private Statement stat;
 
-    public static void main(String args[]){
-        Database db = new Database();
-        for (Event e: db.getFriendEvents(2)) {
-            System.out.println(e.name);
-        }
-        db.closeDB();
-    }
+    public Database() throws SQLException, ClassNotFoundException {
+        Class.forName("org.sqlite.JDBC");
+        conn = DriverManager.getConnection("jdbc:sqlite:database/database.db");
+        stat = conn.createStatement();
 
-    public Database(){
-        try{
-            Class.forName("org.sqlite.JDBC");
-            conn = DriverManager.getConnection("jdbc:sqlite:database/database.db");
-            stat = conn.createStatement();
-        }
-        catch(SQLException e){
-            System.err.println("Database Error: " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            System.err.println("Missing lib for SQLite!");
-        }
     }
 
     private String createHash(String password){
