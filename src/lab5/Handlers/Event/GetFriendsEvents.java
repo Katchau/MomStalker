@@ -48,7 +48,7 @@ public class GetFriendsEvents extends ClientHandler implements HttpHandler{
         else{
             for(int i=0; i < events.size(); i++){
                 Event e = events.get(i);
-                response += "name=" + e.name + "host=" + e.userHost + "x=" + e.gps.x + "y=" + e.gps.y + "\n";
+                response += "name=" + e.name + "host=" + e.userHost + "x=" + e.gps.x + "y=" + e.gps.y + "%";
             }
             writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
         }

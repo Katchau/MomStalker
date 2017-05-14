@@ -48,7 +48,7 @@ public class GetUserEvents extends ClientHandler implements HttpHandler{
         else{
             for(int i=0; i < events.size(); i++){
                 Event e = events.get(i);
-                response += "name=" + e.name + "&host=" + e.userHost + "&x=" + e.gps.x + "&y=" + e.gps.y + "\n";
+                response += e.id + "&" + e.name + "&" + e.userHost + "&" + e.gps.x + "&" + e.gps.y + "%";
             }
             writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
         }

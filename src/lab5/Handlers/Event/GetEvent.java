@@ -44,7 +44,7 @@ public class GetEvent extends ClientHandler implements HttpHandler{
             writeResponse(httpExchange,"No such event",HttpURLConnection.HTTP_NOT_FOUND);
         }
         else{
-            String response = "name=" + e.name + "&host=" + e.userHost + "&x=" + e.gps.x + "&y=" + e.gps.y;
+            String response = "" + e.name + "&" + e.userHost + "&" + e.gps.x + "&" + e.gps.y;
             writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
         }
     }

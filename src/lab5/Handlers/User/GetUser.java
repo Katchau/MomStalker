@@ -42,8 +42,8 @@ public class GetUser extends ClientHandler implements HttpHandler{
             writeResponse(httpExchange,"No such user",HttpURLConnection.HTTP_NOT_FOUND);
         }
         else{
-            String response = "name=" + u.name;
-            if(u.gps != null)response += "&x=" + u.gps.x + "&y=" + u.gps.y;
+            String response = u.name;
+            if(u.gps != null)response += "&" + u.gps.x + "&" + u.gps.y;
             writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
         }
     }
