@@ -29,11 +29,11 @@ public class Connection {
         User u = getUser(id);
         System.out.println(u.name);*/
 
-        /*if (createEvent("Ola", 1, 2.0,3.4))
+        if (createEvent("Ola", 1, 2.0,3.4))
             System.out.println("yey");
         Event e = getEvent(2);
-        System.out.println(e.name);
-       ArrayList<Event> myevents = getEvents(1);
+        if(e != null)System.out.println(e.name);
+        ArrayList<Event> myevents = getEvents(1);
         for (int i = 0; i < myevents.size(); i++){
             System.out.println(myevents.get(i).name);
         }
@@ -42,8 +42,8 @@ public class Connection {
         for (int i = 0; i < myfevents.size(); i++){
             System.out.println(myfevents.get(i).name);
         }
-       if (deleteEvent(2))
-           System.out.println("Yey");*/
+        if (deleteEvent(2))
+           System.out.println("Yey");
     }
 
 
@@ -114,6 +114,10 @@ public class Connection {
     public static Event getEvent(int id){
         String request = "/getevent?id=" + id;
         String response = connect(request);
+        if(response.equals("")){
+            System.out.println("O bruno é burro");
+            return null;
+        }
         String[] parts = response.split("&");
 
         Event e = new Event(id, Integer.parseInt(parts[1]), parts[0], Double.parseDouble(parts[2]), Double.parseDouble(parts[3]));
