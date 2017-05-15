@@ -44,9 +44,9 @@ public class GetFriends extends ClientHandler implements HttpHandler {
         else{
             String response = "";
             for(User u : friends){
-                response += "id" + u.id + "&name=" + u.name;
-                if(u.gps != null)response += "&x=" + u.gps.x + "&y=" + u.gps.y;
-                response += '\n';
+                response += u.id + "&" + u.name;
+                if(u.gps != null)response += "&" + u.gps.x + "&" + u.gps.y;
+                response += '%';
             }
             writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
         }

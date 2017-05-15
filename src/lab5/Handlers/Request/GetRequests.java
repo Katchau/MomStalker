@@ -44,7 +44,7 @@ public class GetRequests extends ClientHandler implements HttpHandler {
         else{
             String response = "";
             for(User u : requests){
-                response += "id=" + u.id + "&name=" + u.name + '\n';
+                response += u.id + "&" + u.name + '%';
             }
             writeResponse(httpExchange,response,HttpURLConnection.HTTP_OK);
         }

@@ -17,7 +17,7 @@ public class Connection {
     static final String url = "http://localhost:6969";
 
     public static void main(String[] args){
-        /*int id;
+        int id;
         if (createUser("Loli", "lala"))
             System.out.println("yey");
         if ((id = verifyLogin("Loli", "lala")) != -1)
@@ -27,7 +27,7 @@ public class Connection {
         if (updateCoords(1, 2.0, 98.4))
             System.out.println("yey");
         User u = getUser(id);
-        System.out.println(u.name);*/
+        System.out.println(u.name);
 
         if (createEvent("Ola", 1, 2.0,3.4))
             System.out.println("yey");
@@ -44,6 +44,24 @@ public class Connection {
         }
         if (deleteEvent(2))
            System.out.println("Yey");
+
+        if (createFRequest(1, 2))
+            System.out.println("yey");
+        if (createAmizade(1,3))
+            System.out.println("yey");
+        ArrayList<User> us = getFRequests(1);
+        for (User user : us){
+            System.out.println(user.name);
+        }
+        System.out.println("--");
+        ArrayList<User> fs = getAmizades(1);
+        for (User user : fs){
+            System.out.println(user.name);
+        }
+        if (deleteFRequest(1, 2))
+            System.out.println("yey");
+        if (deleteAmizade(1,3))
+            System.out.println("yey");
     }
 
 
@@ -80,6 +98,10 @@ public class Connection {
         String request = "/getuser?id=" + id;
         String response = connect(request);
 
+        if(response.equals("")){
+            return null;
+        }
+
         String[] parts = response.split("&");
 
         User u = new User(id, parts[0]);
@@ -114,8 +136,8 @@ public class Connection {
     public static Event getEvent(int id){
         String request = "/getevent?id=" + id;
         String response = connect(request);
+
         if(response.equals("")){
-            System.out.println("O bruno é burro");
             return null;
         }
         String[] parts = response.split("&");
@@ -129,7 +151,7 @@ public class Connection {
         String request = "/myevents?id=" + userId;
         String response = connect(request);
 
-        if (response.equals("Sem Eventos"))
+        if (response.equals(""))
             return new ArrayList<Event>();
 
         ArrayList<Event> res = new ArrayList<Event>();
@@ -150,7 +172,7 @@ public class Connection {
         String request = "/friendsevents?id=" + userId;
         String response = connect(request);
 
-        if (response.equals("Sem Eventos"))
+        if (response.equals(""))
             return new ArrayList<Event>();
 
         ArrayList<Event> res = new ArrayList<Event>();
@@ -172,5 +194,77 @@ public class Connection {
         String response = connect(request);
 
         return response.equals("Success");
+    }
+
+    public static boolean createFRequest(int id1, int id2){
+        String request = "/createrequest?user1=" + id1 + "&user2=" + id2;
+        String response = connect(request);
+
+        return response.equals("Success");
+    }
+
+    public static boolean deleteFRequest(int id1, int id2) {
+        String request = "/deleterequest?user1=" + id1 + "&user2=" + id2;
+        String response = connect(request);
+
+        return response.equals("Success");
+    }
+
+    public static ArrayList<User> getFRequests(int userId){
+        String request = "/getrequests?user=" + userId;
+        String response = connect(request);
+
+        if (response.equals(""))
+            return new ArrayList<User>();
+
+        ArrayList<User> res = new ArrayList<User>();
+
+        String[] users = response.split("%");
+
+        for (int i = 0; i < users.length; i++){
+            String[] parts = users[i].split("&");
+
+            User u = new User(Integer.parseInt(parts[0]), parts[1]);
+            res.add(u);
+        }
+
+        return res;
+    }
+
+    public static boolean createAmizade(int id1, int id2){
+        String request = "/addfriend?user1=" + id1 + "&user2=" + id2;
+        String response = connect(request);
+
+        return response.equals("Success");
+    }
+
+    public static boolean deleteAmizade(int id1, int id2){
+        String request = "/deletefriend?user1=" + id1 + "&user2=" + id2;
+        String response = connect(request);
+
+        return response.equals("Success");
+    }
+
+    public static ArrayList<User> getAmizades(int userId){
+        String request = "/getfriends?user=" + userId;
+        String response = connect(request);
+
+        if (response.equals(""))
+            return new ArrayList<User>();
+
+        ArrayList<User> res = new ArrayList<User>();
+
+        String[] users = response.split("%");
+
+        for (int i = 0; i < users.length; i++){
+            String[] parts = users[i].split("&");
+
+            User u = new User(Integer.parseInt(parts[0]), parts[1]);
+            if (parts.length == 4)
+                u.setCoords(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+            res.add(u);
+        }
+
+        return res;
     }
 }
