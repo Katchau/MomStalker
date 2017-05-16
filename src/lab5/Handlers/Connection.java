@@ -63,7 +63,6 @@ public class Connection {
         if (deleteAmizade(1,3))
             System.out.println("yey");
         */
-        postUser(1);
     }
 
 
@@ -106,9 +105,6 @@ public class Connection {
                 output.close();
             }
 
-            int responseCode = myURLConnection.getResponseCode();
-            System.out.println("ui " + responseCode);
-
             BufferedReader in = new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null)
@@ -127,8 +123,8 @@ public class Connection {
     }
 
     public static boolean createUser(String username, String passsword){
-        String request = "/createuser?username=" + username + "&password=" + passsword;
-        String response = connect(request);
+        String request = "/createuser";
+        String response = postConnect(request, "username=" + username + "&password=" + passsword);
 
         return response.equals("Success");
     }
@@ -151,34 +147,23 @@ public class Connection {
         return u;
     }
 
-    public static boolean postUser(int id){
-        String request = "/postuser";
-        String response = postConnect(request, "id=" + id);
-
-        if(response.equals("")){
-            return false;
-        }
-        System.out.println(response);
-        return true;
-    }
-
     public static boolean updateCoords(int id, double x, double y){
-        String request = "/updtcoords?id=" + id + "&x=" + x + "&y="+ y;
-        String response = connect(request);
+        String request = "/updtcoords";
+        String response = postConnect(request, "id=" + id + "&x=" + x + "&y="+ y);
 
         return response.equals("Success");
     }
 
     public static int verifyLogin(String username, String passsword){
-        String request = "/login?username=" + username + "&password=" + passsword;
-        String response = connect(request);
+        String request = "/login";
+        String response = postConnect(request, "username=" + username + "&password=" + passsword);
 
         return Integer.parseInt(response);
     }
 
     public static boolean createEvent(String name, int idUser, double xCoord, double yCoord){
-        String request = "/createevent?name=" + name + "&idhost=" + idUser + "&x=" + xCoord + "&y=" + yCoord;
-        String response = connect(request);
+        String request = "/createevent";
+        String response = postConnect(request, "name=" + name + "&idhost=" + idUser + "&x=" + xCoord + "&y=" + yCoord);
 
         return response.equals("Success");
     }
@@ -240,22 +225,22 @@ public class Connection {
     }
 
     public static boolean deleteEvent(int id){
-        String request = "/deleteevent?id=" + id;
-        String response = connect(request);
+        String request = "/deleteevent";
+        String response = postConnect(request, "id=" + id);
 
         return response.equals("Success");
     }
 
     public static boolean createFRequest(int id1, int id2){
-        String request = "/createrequest?user1=" + id1 + "&user2=" + id2;
-        String response = connect(request);
+        String request = "/createrequest";
+        String response = postConnect(request, "user1=" + id1 + "&user2=" + id2);
 
         return response.equals("Success");
     }
 
     public static boolean deleteFRequest(int id1, int id2) {
-        String request = "/deleterequest?user1=" + id1 + "&user2=" + id2;
-        String response = connect(request);
+        String request = "/deleterequest";
+        String response = postConnect(request, "user1=" + id1 + "&user2=" + id2);
 
         return response.equals("Success");
     }
@@ -282,15 +267,15 @@ public class Connection {
     }
 
     public static boolean createAmizade(int id1, int id2){
-        String request = "/addfriend?user1=" + id1 + "&user2=" + id2;
-        String response = connect(request);
+        String request = "/addfriend";
+        String response = postConnect(request, "user1=" + id1 + "&user2=" + id2);
 
         return response.equals("Success");
     }
 
     public static boolean deleteAmizade(int id1, int id2){
-        String request = "/deletefriend?user1=" + id1 + "&user2=" + id2;
-        String response = connect(request);
+        String request = "/deletefriend";
+        String response = postConnect(request, "user1=" + id1 + "&user2=" + id2);
 
         return response.equals("Success");
     }
