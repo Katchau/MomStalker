@@ -20,12 +20,12 @@ public class DeleteEvent extends ClientHandler implements HttpHandler{
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         //same thing for post just change the method
-        if(!httpExchange.getRequestMethod().equals("GET")){
-            System.err.println("Received bad request @GetExample");
+        if(!httpExchange.getRequestMethod().equals("POST")){
+            System.err.println("Received bad request @DeleteEvent");
             writeResponse(httpExchange,"Bad Request!",HttpURLConnection.HTTP_BAD_METHOD);
         }
-        if(!validRequest(httpExchange.getRequestURI().getQuery())){
-            System.err.println("Received bad Parameters @GetExample");
+        if(!validPostRequest(httpExchange)){
+            System.err.println("Received bad Parameters @PostUser");
             writeResponse(httpExchange,"Bad Parameters!",HttpURLConnection.HTTP_NOT_ACCEPTABLE);//no clue what error to pick xD
         }
 
