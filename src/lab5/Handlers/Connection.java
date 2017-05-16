@@ -2,9 +2,8 @@ package lab5.Handlers;
 
 import lab5.Utility.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -17,6 +16,7 @@ public class Connection {
     static final String url = "http://localhost:6969";
 
     public static void main(String[] args){
+        /*
         int id;
         if (createUser("Loli", "lala"))
             System.out.println("yey");
@@ -62,6 +62,8 @@ public class Connection {
             System.out.println("yey");
         if (deleteAmizade(1,3))
             System.out.println("yey");
+        */
+        postUser(1);
     }
 
 
@@ -83,6 +85,43 @@ public class Connection {
         }
         catch (IOException e) {
             System.err.println("Erro: " + e.toString());
+        }
+        return response;
+    }
+
+    public static String postConnect(String link,String request){
+        String response = "";
+        try {
+            URL myURL = new URL(url + link);
+            HttpURLConnection myURLConnection = (HttpURLConnection) myURL.openConnection();
+
+            myURLConnection.setRequestMethod("POST");
+            myURLConnection.setRequestProperty("Accept-Charset", "UTF-8");
+            myURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + "UTF-8");
+
+            myURLConnection.setDoOutput(true); // Triggers POST.
+            try (DataOutputStream output = new DataOutputStream(myURLConnection.getOutputStream())) {
+                output.write(request.getBytes("UTF-8"));
+                output.flush();
+                output.close();
+            }
+
+            int responseCode = myURLConnection.getResponseCode();
+            System.out.println("ui " + responseCode);
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null)
+                response += inputLine;
+
+            in.close();
+        }
+        catch (MalformedURLException e) {
+            System.err.println("Malformed");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error: " + e.toString());
         }
         return response;
     }
@@ -110,6 +149,17 @@ public class Connection {
             u.setCoords(Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
         }
         return u;
+    }
+
+    public static boolean postUser(int id){
+        String request = "/postuser";
+        String response = postConnect(request, "id=" + id);
+
+        if(response.equals("")){
+            return false;
+        }
+        System.out.println(response);
+        return true;
     }
 
     public static boolean updateCoords(int id, double x, double y){

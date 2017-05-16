@@ -26,6 +26,7 @@ public class DBServer {
 			HttpServer server = HttpServer.create(new InetSocketAddress(port),0);
 			server.createContext("/porn",new HandlerTest());
 			server.createContext("/getuser",new GetUser());
+			server.createContext("/postuser",new PostUser());
 			server.createContext("/createuser",new CreateUser());
 			server.createContext("/login",new VerifyLogin());
 			server.createContext("/updtcoords",new UpdateCoords());
