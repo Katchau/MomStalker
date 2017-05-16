@@ -16,19 +16,19 @@ public class Connection {
     static final String url = "http://localhost:6969";
 
     public static void main(String[] args){
-        /*
+
         int id;
-        if (createUser("Loli", "lala"))
+        if (createUser("Batatum", "lala"))
             System.out.println("yey");
-        if ((id = verifyLogin("Loli", "lala")) != -1)
+        if ((id = verifyLogin("Batatum", "lala")) != -1)
             System.out.println("yey");
-        if (verifyLogin("Loli", "lele") == -1)
+        if (verifyLogin("Batatum", "lele") == -1)
             System.out.println("yey");
         if (updateCoords(1, 2.0, 98.4))
             System.out.println("yey");
         User u = getUser(id);
         System.out.println(u.name);
-
+        /*
         if (createEvent("Ola", 1, 2.0,3.4))
             System.out.println("yey");
         Event e = getEvent(2);
