@@ -3,22 +3,32 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:baselineAligned="true"
     android:orientation="vertical">
 
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Cancer" />
+    <GridLayout
+        android:layout_width="384dp"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
+
+
+    </GridLayout>
+
+
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="386dp"
-        android:layout_height="518dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         tools:context="friendstalker.momstalker.MapsActivity" />
 
 </LinearLayout>
