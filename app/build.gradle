@@ -13,9 +13,9 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("mapskey.keystore")
+            storeFile file("mapskey.jks")
             storePassword "trusttheprocess"
-            keyAlias "MapsKey"
+            keyAlias "mapstalker"
             keyPassword "trusttheprocess"
         }
     }
@@ -23,6 +23,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
