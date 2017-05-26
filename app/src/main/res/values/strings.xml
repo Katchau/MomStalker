@@ -7,4 +7,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_log_in">Register</string>
+
+    <!-- Strings related to login -->
+    <string name="error_missing_username">Username field is missing!</string>
+    <string name="error_missing_password">Password field is missing!</string>
+    <string name="error_missing_confirmation">Password Confirmation field is missing!</string>
+    <string name="error_incorrect_account">Invalid LogIn!</string>
+    <string name="error_fail_sign">Failed Creating Account! Try using other username!</string>
+    <string name="error_different_fields">Password and Confirmation dont match!</string>
 </resources>

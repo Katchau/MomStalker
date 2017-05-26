@@ -13,7 +13,8 @@
         <item
             android:id="@+id/friendmenu"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Friends" />
+            android:title="Friends"
+            android:visible="false"/>
         <item
             android:id="@+id/eventmenu"
             android:icon="@drawable/ic_menu_manage"
