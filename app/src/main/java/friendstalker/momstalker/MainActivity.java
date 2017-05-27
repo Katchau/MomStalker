@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        if(AndroidUser.user != null)
+            changeDisplayUser();
     }
 
     @Override
@@ -76,6 +79,13 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void changeDisplayUser(){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.getMenu().findItem(R.id.sign).setVisible(false);
+
+        navigationView.getMenu().findItem(R.id.log).setTitle("Log out from " + AndroidUser.user.name);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -86,10 +96,10 @@ public class MainActivity extends AppCompatActivity
             Intent sign = new Intent(this,Register.class);
             startActivity(sign);
         } else if (id == R.id.log) {
-//            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-//            navigationView.getMenu().findItem(R.id.friendmenu).setVisible(true);
-            Intent log = new Intent(this,LogIn.class);
-            startActivity(log);
+            if(AndroidUser.user == null){
+                Intent log = new Intent(this,LogIn.class);
+                startActivity(log);
+            }
         } else if (id == R.id.friendmenu) {
 
         } else if (id == R.id.eventmenu) {

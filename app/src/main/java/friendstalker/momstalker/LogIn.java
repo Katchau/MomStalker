@@ -57,6 +57,10 @@ public class LogIn extends AppCompatActivity {
         else return false;
     }
 
+    private void logInSuccessfull(int id){
+        new AndroidUser(Connection.getUser(id));
+    }
+
     private void createButtonListener(final LogIn logIn){
         login.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -66,7 +70,7 @@ public class LogIn extends AppCompatActivity {
                 if(!setErrorMsg(pass, err2) && !setErrorMsg(user,err1) ){
                     String validation = Connection.verifyLogin(user,pass);
                     if(!setErrorMsg(validation,err3)){
-                        //TODO ir buscar user e inicializa-lo
+                        logInSuccessfull(Integer.parseInt(validation));
                         Intent intent = new Intent(logIn, MainActivity.class);
                         startActivity(intent);
                     }
