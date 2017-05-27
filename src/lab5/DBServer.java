@@ -67,7 +67,7 @@ public class DBServer {
 
 			server.createContext("/porn",new HandlerTest());
 			server.createContext("/getuser",new GetUser());
-			server.createContext("/postuser",new PostUser());
+			server.createContext("/getiduser",new UserID());
 			server.createContext("/createuser",new CreateUser());
 			server.createContext("/login",new VerifyLogin());
 			server.createContext("/updtcoords",new UpdateCoords());

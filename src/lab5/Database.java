@@ -87,6 +87,23 @@ public class Database {
         return user;
     }
 
+    public int getUserID(String username){
+        int id = -1;
+        try{
+            PreparedStatement insert = conn.prepareStatement("select * from Users where username = ?");
+            insert.setString(1,username);
+            ResultSet result = insert.executeQuery();
+            if(result.next()){
+                id = Integer.parseInt(result.getString("id"));
+            }
+            result.close();
+            insert.close();
+        } catch (SQLException e) {
+            System.err.println("Getting User error: " + e.getMessage());
+        }
+        return id;
+    }
+
     public int verifyLogin(String username, String password){
         String iPass = "lol";
         String rPass = "meque";

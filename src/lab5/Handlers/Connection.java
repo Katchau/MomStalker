@@ -1,23 +1,35 @@
 package lab5.Handlers;
 
+import com.sun.net.httpserver.HttpsServer;
 import lab5.Utility.*;
 
+import javax.net.ssl.*;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 
 /**
  * Created by Bruno Barros on 14/05/2017.
  */
 public class Connection {
-    static final String url = "http://localhost:6969";
+    static final String url = "https://localhost:6969";
 
-    public static void main(String[] args){
+       static HostnameVerifier hv = new HostnameVerifier() {
+        public boolean verify(String hostname, SSLSession session) {
+            return hostname.equals("localhost");
+        }
+    };
+
+    public static void main(String[] args) throws Exception{
 
         int id;
+        System.out.println(id = getUserID("Batatum"));
+        User u = getUser(id);
+        System.out.println(u.name);
+
+        /*
         if (createUser("Batatum", "lala"))
             System.out.println("yey");
         if ((id = verifyLogin("Batatum", "lala")) != -1)
@@ -28,7 +40,7 @@ public class Connection {
             System.out.println("yey");
         User u = getUser(id);
         System.out.println(u.name);
-        /*
+
         if (createEvent("Ola", 1, 2.0,3.4))
             System.out.println("yey");
         Event e = getEvent(2);
@@ -65,12 +77,55 @@ public class Connection {
         */
     }
 
+    public static SSLContext createSSL(){
+        SSLContext ssl = null;
+        try {
+            ssl = SSLContext.getInstance("TLS");
+
+            char[] password = "123456".toCharArray();
+
+            KeyStore ks = KeyStore.getInstance("JKS");
+            ks.load(new FileInputStream("client.keys"), password);
+
+            KeyStore ts = KeyStore.getInstance("JKS");
+            ts.load(new FileInputStream("truststore"), password);
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(ks, password);
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(ts);
+
+            ssl.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println("Erro: " + e.toString());
+        } catch (IOException e) {
+            System.err.println("Erro: " + e.toString());
+        } catch (CertificateException e) {
+            System.err.println("Erro Certificado: " + e.toString());
+        } catch (UnrecoverableKeyException e) {
+            System.err.println("Erro Unrecoverable Key: " + e.toString());
+        } catch (KeyStoreException e) {
+            System.err.println("Erro Key Store: " + e.toString());
+        } catch (KeyManagementException e) {
+            System.err.println("Erro Key Management: " + e.toString());
+        }
+
+        return ssl;
+    }
+
 
     public static String connect(String request){
         String response = "";
         try {
+            SSLContext ssl = createSSL();
+            HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
             URL myURL = new URL(url + request);
-            URLConnection myURLConnection = myURL.openConnection();
+            HttpsURLConnection myURLConnection = (HttpsURLConnection) myURL.openConnection();
+
+            myURLConnection.setConnectTimeout(2000);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
             String inputLine;
@@ -91,12 +146,18 @@ public class Connection {
     public static String postConnect(String link,String request){
         String response = "";
         try {
+            SSLContext ssl = createSSL();
+            HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
             URL myURL = new URL(url + link);
-            HttpURLConnection myURLConnection = (HttpURLConnection) myURL.openConnection();
+            HttpsURLConnection myURLConnection = (HttpsURLConnection) myURL.openConnection();
 
             myURLConnection.setRequestMethod("POST");
             myURLConnection.setRequestProperty("Accept-Charset", "UTF-8");
             myURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + "UTF-8");
+
+            myURLConnection.setConnectTimeout(2000);
 
             myURLConnection.setDoOutput(true); // Triggers POST.
             try (DataOutputStream output = new DataOutputStream(myURLConnection.getOutputStream())) {
@@ -147,6 +208,16 @@ public class Connection {
         return u;
     }
 
+    public static int getUserID(String username){
+        String request = "/getiduser?username=" + username;
+        String response = connect(request);
+
+        if (response.equals(""))
+            return -1;
+
+        return Integer.parseInt(response);
+    }
+
     public static boolean updateCoords(int id, double x, double y){
         String request = "/updtcoords";
         String response = postConnect(request, "id=" + id + "&x=" + x + "&y="+ y);
@@ -154,11 +225,11 @@ public class Connection {
         return response.equals("Success");
     }
 
-    public static int verifyLogin(String username, String passsword){
+    public static String verifyLogin(String username, String passsword){
         String request = "/login";
         String response = postConnect(request, "username=" + username + "&password=" + passsword);
 
-        return Integer.parseInt(response);
+        return response;
     }
 
     public static boolean createEvent(String name, int idUser, double xCoord, double yCoord){
