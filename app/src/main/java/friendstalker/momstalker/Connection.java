@@ -24,6 +24,7 @@ public class Connection {
         try {
             URL myURL = new URL(url + request);
             URLConnection myURLConnection = myURL.openConnection();
+            myURLConnection.setConnectTimeout(2000);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
             String inputLine;
@@ -53,6 +54,8 @@ public class Connection {
             myURLConnection.setRequestMethod("POST");
             myURLConnection.setRequestProperty("Accept-Charset", "UTF-8");
             myURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + "UTF-8");
+            myURLConnection.setConnectTimeout(2000);
+//            myURLConnection.connect();
 
             myURLConnection.setDoOutput(true); // Triggers POST.
             try (DataOutputStream output = new DataOutputStream(myURLConnection.getOutputStream())) {

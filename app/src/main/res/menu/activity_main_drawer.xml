@@ -18,7 +18,8 @@
         <item
             android:id="@+id/eventmenu"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Events" />
+            android:title="Events"
+            android:visible="false"/>
     </group>
 
     <item android:title="Communicate">

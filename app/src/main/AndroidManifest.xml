@@ -54,13 +54,31 @@
         <activity
             android:name=".Register"
             android:label="@string/title_activity_register"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LogIn"
             android:label="@string/title_activity_log_in"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".FriendActivity"
+            android:label="@string/title_activity_friend"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventsActivity"
+            android:label="@string/title_activity_events"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".FriendMenu.ViewFriendsActivity"
+            android:label="@string/title_activity_view_friends"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".FriendMenu.FriendRequestActivity"
+            android:label="@string/title_activity_friend_request"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".FriendMenu.CreateRequestActivity"
+            android:label="@string/title_activity_create_request"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

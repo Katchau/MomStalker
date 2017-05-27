@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //new AndroidUser();
         if(AndroidUser.user != null)
             changeDisplayUser();
     }
@@ -82,7 +83,8 @@ public class MainActivity extends AppCompatActivity
     public void changeDisplayUser(){
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.getMenu().findItem(R.id.sign).setVisible(false);
-
+        navigationView.getMenu().findItem(R.id.friendmenu).setVisible(true);
+        navigationView.getMenu().findItem(R.id.eventmenu).setVisible(true);
         navigationView.getMenu().findItem(R.id.log).setTitle("Log out from " + AndroidUser.user.name);
     }
 
@@ -101,9 +103,11 @@ public class MainActivity extends AppCompatActivity
                 startActivity(log);
             }
         } else if (id == R.id.friendmenu) {
-
+            Intent friend = new Intent(this,FriendActivity.class);
+            startActivity(friend);
         } else if (id == R.id.eventmenu) {
-
+            Intent event = new Intent(this,EventsActivity.class);
+            startActivity(event);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
