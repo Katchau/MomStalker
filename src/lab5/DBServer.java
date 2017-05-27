@@ -1,7 +1,10 @@
 package lab5;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.security.*;
+import java.security.cert.CertificateException;
 
 import com.sun.net.httpserver.*;
 import lab5.Handlers.*;
@@ -14,6 +17,8 @@ import lab5.Handlers.Request.DeleteRequest;
 import lab5.Handlers.Request.GetRequests;
 import lab5.Handlers.User.*;
 
+import javax.net.ssl.*;
+
 public class DBServer {
 	private final int port = 6969;
 
@@ -23,7 +28,43 @@ public class DBServer {
 
 	public DBServer(){
 		try{
-			HttpServer server = HttpServer.create(new InetSocketAddress(port),0);
+			HttpsServer server = HttpsServer.create(new InetSocketAddress(port),0);
+			SSLContext ssl = SSLContext.getInstance("TLS");
+
+			char[] password = "123456".toCharArray();
+
+			KeyStore ks = KeyStore.getInstance("JKS");
+			ks.load(new FileInputStream("server.keys"), password);
+
+			KeyStore ts = KeyStore.getInstance("JKS");
+			ts.load(new FileInputStream("truststore"), password);
+
+			KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+			kmf.init(ks, password);
+
+			TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+			tmf.init(ts);
+
+			ssl.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+			server.setHttpsConfigurator (new HttpsConfigurator(ssl) {
+				public void configure (HttpsParameters params) {
+					try {
+						SSLContext c = SSLContext.getDefault();
+						SSLEngine engine = c.createSSLEngine();
+						params.setNeedClientAuth(false);
+						params.setCipherSuites(engine.getEnabledCipherSuites());
+						params.setProtocols(engine.getEnabledProtocols());
+
+						SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
+						params.setSSLParameters(defaultSSLParameters);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						System.out.println("Failed to create HTTPS server");
+					}
+				}
+			});
+
 			server.createContext("/porn",new HandlerTest());
 			server.createContext("/getuser",new GetUser());
 			server.createContext("/postuser",new PostUser());
@@ -47,6 +88,16 @@ public class DBServer {
 		}
 		catch(IOException e){
 			System.err.println("Server Error: " + e.getMessage());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			e.printStackTrace();
+		} catch (UnrecoverableKeyException e) {
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			e.printStackTrace();
+		} catch (KeyManagementException e) {
+			e.printStackTrace();
 		}
 	}
 }
