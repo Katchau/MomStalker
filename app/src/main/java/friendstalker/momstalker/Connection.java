@@ -337,7 +337,7 @@ public class Connection {
 
             User u = new User(Integer.parseInt(parts[0]), parts[1]);
             if (parts.length == 4)
-                u.setCoords(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+                u.setCoords(Double.parseDouble(parts[2]), Double.parseDouble(parts[3]));
             res.add(u);
         }
 
