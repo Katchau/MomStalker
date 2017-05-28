@@ -28,7 +28,7 @@ public class FriendEventsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerFriend);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerEvents);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         initFirstData();
