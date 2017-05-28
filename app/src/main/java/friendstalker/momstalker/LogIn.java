@@ -62,6 +62,7 @@ public class LogIn extends AppCompatActivity {
 
     private void logInSuccessfull(int id){
         new AndroidUser(Connection.getUser(id));
+        NotificationClient.logIn(AndroidUser.user.name);
     }
 
     private void createButtonListener(final LogIn logIn){

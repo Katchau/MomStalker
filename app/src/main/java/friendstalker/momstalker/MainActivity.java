@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity
         //new AndroidUser();
         if(AndroidUser.user != null)
             changeDisplayUser();
+        if(NotificationClient.c == null)
+            new NotificationClient();
     }
 
     @Override
