@@ -8,11 +8,17 @@ public class Event {
     public int userHost;
     public String name;
     public Coordinates gps;
+    public boolean active;
 
     public Event(int id, int userHost, String name, double x, double y){
         this.id = id;
         this.userHost = userHost;
         this.name = name;
         this.gps = new Coordinates(x, y);
+        active = false;
+    }
+
+    public void changeState(){
+        active = !active;
     }
 }

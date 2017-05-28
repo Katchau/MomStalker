@@ -41,4 +41,12 @@ public class AndroidUser {
         myEvents = new ArrayList<>();
         events = new ArrayList<>();
     }
+
+    public static void resetVars(){
+        user = null;
+        friends = null;
+        friendRequests = null;
+        myEvents = null;
+        events = null;
+    }
 }

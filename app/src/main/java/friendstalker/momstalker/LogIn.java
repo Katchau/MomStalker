@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class LogIn extends AppCompatActivity {
     private Button login = null;
     private EditText username = null;

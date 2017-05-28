@@ -78,6 +78,26 @@
         <activity
             android:name=".FriendMenu.CreateRequestActivity"
             android:label="@string/title_activity_create_request"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".FriendMenu.DeleteFriendActivity"
+            android:label="@string/title_activity_delete_friend"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventMenu.ViewMyEventsActivity"
+            android:label="@string/title_activity_view_my_events"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventMenu.FriendEventsActivity"
+            android:label="@string/title_activity_friend_events"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventMenu.CreateEventActivity"
+            android:label="@string/title_activity_create_event"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EventMenu.DeleteEventActivity"
+            android:label="@string/title_activity_delete_event"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

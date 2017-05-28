@@ -15,29 +15,30 @@ import android.widget.TextView;
 
 import friendstalker.momstalker.AndroidUser;
 import friendstalker.momstalker.Connection;
-import friendstalker.momstalker.FriendActivity;
 import friendstalker.momstalker.R;
+import friendstalker.momstalker.Utility.User;
 
-public class CreateRequestActivity extends AppCompatActivity {
+public class DeleteFriendActivity extends AppCompatActivity {
     private EditText username = null;
-    private Button add = null;
+    private Button remove = null;
     private TextView errorMsg = null;
     private Resources res = null;
     private String err = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_request);
+        setContentView(R.layout.activity_delete_friend);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        username = (EditText) findViewById(R.id.addFriendText);
-        add = (Button) findViewById(R.id.addFriendB);
-        errorMsg = (TextView) findViewById(R.id.errorMsgAddF);
+        username = (EditText) findViewById(R.id.removeFriendText);
+        remove = (Button) findViewById(R.id.removeFriendB);
+        errorMsg = (TextView) findViewById(R.id.errorMsgRemoveF);
 
         res = getResources();
         err = res.getString(R.string.error_invalid_username);
@@ -45,21 +46,26 @@ public class CreateRequestActivity extends AppCompatActivity {
         createButtonListener(this);
     }
 
-    private void createButtonListener(final CreateRequestActivity requestActivity){
-        add.setOnClickListener(new View.OnClickListener() {
+    private void createButtonListener(final DeleteFriendActivity deleteFriendActivity){
+        remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String user = username.getText().toString();
-                int id1 = AndroidUser.user.id;
-                int id2 = Connection.getUserID(user);
-                //second condition isnt necessary but wtv
-                if(id2 > -1 && id1 != id2){
-                    if(id2 > id1){
-                        id1 = id2;
-                        id2 = AndroidUser.user.id;
+                int friendId = 0;
+                int ownId = AndroidUser.user.id;
+                for(User u : AndroidUser.friends){
+                    if(u.name.equals(user)){
+                        friendId = u.id;
+                        break;
                     }
-                    Connection.createFRequest(id1,id2);
-                    Intent intent = new Intent(requestActivity,ViewFriendsActivity.class);
+                }
+                if(friendId > 0){
+                    if(ownId < friendId)
+                        Connection.deleteAmizade(ownId,friendId);
+                    else
+                        Connection.deleteAmizade(friendId,ownId);
+
+                    Intent intent = new Intent(deleteFriendActivity,ViewFriendsActivity.class);
                     startActivity(intent);
                 }
                 else{
@@ -69,4 +75,5 @@ public class CreateRequestActivity extends AppCompatActivity {
             }
         });
     }
+
 }

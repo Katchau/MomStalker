@@ -11,19 +11,83 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManagerFactory;
 
 /**
  * Created by Bruno Barros on 14/05/2017.
  */
 public class Connection {
-    static final String url = "http://10.0.2.2:6969";
+    //TODO mudar isto para por o link do cenas!
+    static final String url = "https://friendstalker.ddns.net:6969";
+
+    static HostnameVerifier hv = new HostnameVerifier() {
+        public boolean verify(String hostname, SSLSession session) {
+            return hostname.equals("friendstalker.ddns.net");
+        }
+    };
+
+
+    public static SSLContext createSSL(){
+        SSLContext ssl = null;
+        try {
+            ssl = SSLContext.getInstance("TLS");
+
+            char[] password = "123456".toCharArray();
+
+            KeyStore ks = KeyStore.getInstance("BKS");
+            ks.load(new User(1,"").getClass().getClassLoader().getResourceAsStream("assets/client.bks"), password);
+            //don't question how this file thing works. I lost 2h on this.
+            KeyStore ts = KeyStore.getInstance("BKS");
+            ts.load(new User(1,"").getClass().getClassLoader().getResourceAsStream("assets/truststore.bks"), password);
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(ks, password);
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(ts);
+
+            ssl.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println("Erro: " + e.toString());
+        } catch (IOException e) {
+            System.err.println("Erro IO: " + e.toString());
+        } catch (CertificateException e) {
+            System.err.println("Erro Certificado: " + e.toString());
+        } catch (UnrecoverableKeyException e) {
+            System.err.println("Erro Unrecoverable Key: " + e.toString());
+        } catch (KeyStoreException e) {
+            System.err.println("Erro Key Store: " + e.toString());
+        } catch (KeyManagementException e) {
+            System.err.println("Erro Key Management: " + e.toString());
+        }
+
+        return ssl;
+    }
+
 
     public static String connect(String request){
         String response = "";
         try {
+            SSLContext ssl = createSSL();
+            HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
             URL myURL = new URL(url + request);
-            URLConnection myURLConnection = myURL.openConnection();
+            HttpsURLConnection myURLConnection = (HttpsURLConnection) myURL.openConnection();
+
             myURLConnection.setConnectTimeout(2000);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
@@ -42,20 +106,22 @@ public class Connection {
         return response;
     }
 
-
-
     @SuppressLint("NewApi")
     public static String postConnect(String link, String request){
         String response = "";
         try {
+            SSLContext ssl = createSSL();
+            HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
             URL myURL = new URL(url + link);
-            HttpURLConnection myURLConnection = (HttpURLConnection) myURL.openConnection();
+            HttpsURLConnection myURLConnection = (HttpsURLConnection) myURL.openConnection();
 
             myURLConnection.setRequestMethod("POST");
             myURLConnection.setRequestProperty("Accept-Charset", "UTF-8");
             myURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + "UTF-8");
+
             myURLConnection.setConnectTimeout(2000);
-//            myURLConnection.connect();
 
             myURLConnection.setDoOutput(true); // Triggers POST.
             try (DataOutputStream output = new DataOutputStream(myURLConnection.getOutputStream())) {
@@ -104,6 +170,16 @@ public class Connection {
             u.setCoords(Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
         }
         return u;
+    }
+
+    public static int getUserID(String username){
+        String request = "/getiduser?username=" + username;
+        String response = connect(request);
+
+        if (response.equals(""))
+            return -1;
+
+        return Integer.parseInt(response);
     }
 
     public static boolean updateCoords(int id, double x, double y){

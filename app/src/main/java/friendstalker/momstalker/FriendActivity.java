@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import friendstalker.momstalker.FriendMenu.CreateRequestActivity;
+import friendstalker.momstalker.FriendMenu.DeleteFriendActivity;
 import friendstalker.momstalker.FriendMenu.FriendRequestActivity;
 import friendstalker.momstalker.FriendMenu.ViewFriendsActivity;
 
@@ -99,7 +100,7 @@ public class FriendActivity extends AppCompatActivity {
         remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(friend,CreateRequestActivity.class);
+                Intent intent = new Intent(friend,DeleteFriendActivity.class);
                 startActivity(intent);
             }
         });

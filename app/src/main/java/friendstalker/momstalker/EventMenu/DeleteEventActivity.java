@@ -1,4 +1,4 @@
-package friendstalker.momstalker.FriendMenu;
+package friendstalker.momstalker.EventMenu;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -15,51 +15,52 @@ import android.widget.TextView;
 
 import friendstalker.momstalker.AndroidUser;
 import friendstalker.momstalker.Connection;
-import friendstalker.momstalker.FriendActivity;
+import friendstalker.momstalker.FriendMenu.DeleteFriendActivity;
+import friendstalker.momstalker.FriendMenu.ViewFriendsActivity;
 import friendstalker.momstalker.R;
+import friendstalker.momstalker.Utility.Event;
+import friendstalker.momstalker.Utility.User;
 
-public class CreateRequestActivity extends AppCompatActivity {
-    private EditText username = null;
-    private Button add = null;
+public class DeleteEventActivity extends AppCompatActivity {
+    private EditText eventName = null;
+    private Button remove = null;
     private TextView errorMsg = null;
-    private Resources res = null;
     private String err = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_request);
+        setContentView(R.layout.activity_delete_event);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        username = (EditText) findViewById(R.id.addFriendText);
-        add = (Button) findViewById(R.id.addFriendB);
-        errorMsg = (TextView) findViewById(R.id.errorMsgAddF);
-
-        res = getResources();
-        err = res.getString(R.string.error_invalid_username);
+        eventName = (EditText) findViewById(R.id.removeEventText);
+        remove = (Button) findViewById(R.id.removeEventB);
+        errorMsg = (TextView) findViewById(R.id.errorMsgRemoveE);
+        err = "Event not found!";
 
         createButtonListener(this);
     }
 
-    private void createButtonListener(final CreateRequestActivity requestActivity){
-        add.setOnClickListener(new View.OnClickListener() {
+    private void createButtonListener(final DeleteEventActivity eventE){
+        remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String user = username.getText().toString();
-                int id1 = AndroidUser.user.id;
-                int id2 = Connection.getUserID(user);
-                //second condition isnt necessary but wtv
-                if(id2 > -1 && id1 != id2){
-                    if(id2 > id1){
-                        id1 = id2;
-                        id2 = AndroidUser.user.id;
+                String event = eventName.getText().toString();
+                AndroidUser.myEvents = Connection.getEvents(AndroidUser.user.id);
+                int eventId = 0;
+                for(Event e : AndroidUser.myEvents){
+                    if(e.name.equals(event)){
+                        eventId = e.id;
+                        break;
                     }
-                    Connection.createFRequest(id1,id2);
-                    Intent intent = new Intent(requestActivity,ViewFriendsActivity.class);
+                }
+                if(eventId > 0){
+                    Connection.deleteEvent(eventId);
+                    Intent intent = new Intent(eventE,ViewFriendsActivity.class);
                     startActivity(intent);
                 }
                 else{
@@ -69,4 +70,5 @@ public class CreateRequestActivity extends AppCompatActivity {
             }
         });
     }
+
 }

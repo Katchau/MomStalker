@@ -14,8 +14,10 @@
     <string name="error_missing_username">Username field is missing!</string>
     <string name="error_missing_password">Password field is missing!</string>
     <string name="error_missing_confirmation">Password Confirmation field is missing!</string>
+    <string name="error_missing_field">Some field is missing!</string>
     <string name="error_incorrect_account">Invalid LogIn!</string>
     <string name="error_fail_sign">Failed Creating Account! Try using other username!</string>
+    <string name="error_fail_create_event">Failed Creating Event!</string>
     <string name="error_invalid_action">Action Failed! Server is down or you probably cant do this!</string>
     <string name="error_invalid_username">Username not found!</string>
     <string name="error_different_fields">Password and Confirmation dont match!</string>
@@ -24,4 +26,9 @@
     <string name="title_activity_view_friends">ViewFriendsActivity</string>
     <string name="title_activity_friend_request">FriendRequestActivity</string>
     <string name="title_activity_create_request">CreateRequestActivity</string>
+    <string name="title_activity_delete_friend">DeleteFriendActivity</string>
+    <string name="title_activity_view_my_events">ViewMyEventsActivity</string>
+    <string name="title_activity_friend_events">FriendEventsActivity</string>
+    <string name="title_activity_create_event">CreateEventActivity</string>
+    <string name="title_activity_delete_event">DeleteEventActivity</string>
 </resources>

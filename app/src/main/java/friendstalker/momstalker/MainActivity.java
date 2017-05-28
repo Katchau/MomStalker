@@ -15,6 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -101,6 +104,12 @@ public class MainActivity extends AppCompatActivity
             if(AndroidUser.user == null){
                 Intent log = new Intent(this,LogIn.class);
                 startActivity(log);
+            }
+            else{
+                AndroidUser.resetVars();
+                Intent refresh = new Intent(this, MainActivity.class);
+                startActivity(refresh);
+                finish();
             }
         } else if (id == R.id.friendmenu) {
             Intent friend = new Intent(this,FriendActivity.class);
