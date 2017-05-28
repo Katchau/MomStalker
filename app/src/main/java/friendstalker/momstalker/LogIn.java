@@ -77,6 +77,7 @@ public class LogIn extends AppCompatActivity {
                         logInSuccessfull(Integer.parseInt(validation));
                         Intent intent = new Intent(logIn, MainActivity.class);
                         startActivity(intent);
+                        finish();
                     }
                 }
             }

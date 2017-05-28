@@ -30,12 +30,18 @@ import javax.net.ssl.TrustManagerFactory;
  * Created by Bruno Barros on 14/05/2017.
  */
 public class Connection {
-    //TODO mudar isto para por o link do cenas!
-    static final String url = "https://friendstalker.ddns.net:6969";
+    public static String host = "friendstalker.ddns.net";
+    public static int port = 6969;
+    static String url = "https://friendstalker.ddns.net:6969";
+
+
+    public static void rebuildIp(){
+        url = "https://" + host + ":" + port;
+    }
 
     static HostnameVerifier hv = new HostnameVerifier() {
         public boolean verify(String hostname, SSLSession session) {
-            return hostname.equals("friendstalker.ddns.net");
+            return hostname.equals(host);
         }
     };
 

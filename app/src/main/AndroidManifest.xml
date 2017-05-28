@@ -98,6 +98,10 @@
         <activity
             android:name=".EventMenu.DeleteEventActivity"
             android:label="@string/title_activity_delete_event"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Utility.OptionActivity"
+            android:label="@string/title_activity_option"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

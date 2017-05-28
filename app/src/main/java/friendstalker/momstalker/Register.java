@@ -79,6 +79,7 @@ public class Register extends AppCompatActivity {
                     else if(Connection.createUser(user,pass)){
                         Intent intent = new Intent(reg,MainActivity.class);
                         startActivity(intent);
+                        finish();
                     }
                     else{
                         setErrorMsg("",err4);

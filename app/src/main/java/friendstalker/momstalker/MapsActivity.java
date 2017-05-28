@@ -30,7 +30,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LocationManager lManager;
     private boolean isProviderActive = false;
-    private User user = null;
     private String currLocation = null;
 
     @Override
@@ -41,23 +40,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        user = new User(1,"Testando...");
     }
 
     private void changeLocationCamera(){
-        if(user.gps != null && currLocation != null){
-            LatLng latLng = new LatLng(user.gps.x,user.gps.y);
+        if(AndroidUser.user.gps != null && currLocation != null){
+            LatLng latLng = new LatLng(AndroidUser.user.gps.x,AndroidUser.user.gps.y);
             mMap.addMarker(new MarkerOptions().position(latLng).title(currLocation));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,10.2f));
         }
     }
 
     public void debuggPosition(View view){
-        if(user.gps == null)
+        if(AndroidUser.user.gps == null)
             System.out.println("No position!");
         else
-            System.out.println(user.gps);
+            System.out.println(AndroidUser.user.gps);
     }
 
     private LocationListener getLocationListener(){
@@ -66,7 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onLocationChanged(Location location) {
                 double lat = location.getLatitude();
                 double lon = location.getLongitude();
-                user.setCoords(lat,lon);
+                AndroidUser.user.setCoords(lat,lon);
                 //double zoom = location.getAltitude();
                 Geocoder geocoder = new Geocoder(getApplicationContext());
                 try {
