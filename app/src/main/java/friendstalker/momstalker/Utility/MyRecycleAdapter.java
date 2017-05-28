@@ -115,7 +115,7 @@ public class MyRecycleAdapter extends RecyclerView.Adapter<MyRecycleAdapter.View
                 Button b = (Button) v.findViewById(R.id.button);
                 int id1 = AndroidUser.user.id;
                 int id2 = friend.id;
-                if(id2 > id1){
+                if(id2 < id1){
                     id2 = id1;
                     id1 = friend.id;
                 }

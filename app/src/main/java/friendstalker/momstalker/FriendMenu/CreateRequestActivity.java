@@ -16,6 +16,7 @@ import android.widget.TextView;
 import friendstalker.momstalker.AndroidUser;
 import friendstalker.momstalker.Connection;
 import friendstalker.momstalker.FriendActivity;
+import friendstalker.momstalker.MainActivity;
 import friendstalker.momstalker.R;
 
 public class CreateRequestActivity extends AppCompatActivity {
@@ -54,13 +55,14 @@ public class CreateRequestActivity extends AppCompatActivity {
                 int id2 = Connection.getUserID(user);
                 //second condition isnt necessary but wtv
                 if(id2 > -1 && id1 != id2){
-                    if(id2 > id1){
+                    if(id2 < id1){
                         id1 = id2;
                         id2 = AndroidUser.user.id;
                     }
                     Connection.createFRequest(id1,id2);
-                    Intent intent = new Intent(requestActivity,ViewFriendsActivity.class);
+                    Intent intent = new Intent(requestActivity,MainActivity.class);
                     startActivity(intent);
+                    finish();
                 }
                 else{
                     errorMsg.setText(err);
