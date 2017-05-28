@@ -89,10 +89,10 @@ public class Connection {
         try {
             SSLContext ssl = createSSL();
             HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(hv);
 
             URL myURL = new URL(url + request);
             HttpsURLConnection myURLConnection = (HttpsURLConnection) myURL.openConnection();
+            myURLConnection.setHostnameVerifier(hv);
 
             myURLConnection.setConnectTimeout(2000);
 
@@ -118,10 +118,10 @@ public class Connection {
         try {
             SSLContext ssl = createSSL();
             HttpsURLConnection.setDefaultSSLSocketFactory(ssl.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(hv);
 
             URL myURL = new URL(url + link);
             HttpsURLConnection myURLConnection = (HttpsURLConnection) myURL.openConnection();
+            myURLConnection.setHostnameVerifier(hv);
 
             myURLConnection.setRequestMethod("POST");
             myURLConnection.setRequestProperty("Accept-Charset", "UTF-8");

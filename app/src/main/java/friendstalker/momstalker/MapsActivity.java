@@ -40,6 +40,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        System.out.println("the kfc hmm yummi");
     }
 
     private void changeLocationCamera(){
@@ -104,12 +105,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        LatLng sydney = new LatLng(-34,151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Aids"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            System.out.println("No permissions :/");
             return;
         }
         mMap.setMyLocationEnabled(true);
-
+        System.out.println("Cenas giras");
 //        lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 //        if(lManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 //            lManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, getLocationListener());
