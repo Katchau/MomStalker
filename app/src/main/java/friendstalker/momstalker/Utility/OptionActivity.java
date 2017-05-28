@@ -42,7 +42,7 @@ public class OptionActivity extends AppCompatActivity {
         }
         if(portS != null && portS != "" && !portS.replace(" ","").equals("")){
             Connection.port = Integer.parseInt(portS);
-            NotificationClient.port = Integer.parseInt(portS);
+            NotificationClient.port = Integer.parseInt(portS) + 31;//tem de ser diferente
         }
         NotificationClient.rebuildUri();
         Connection.rebuildIp();

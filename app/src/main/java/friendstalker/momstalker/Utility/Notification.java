@@ -1,10 +1,14 @@
 package friendstalker.momstalker.Utility;
 
+import android.app.Activity;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+
+import friendstalker.momstalker.MainActivity;
 
 /**
  * Created by alcin on 28/05/2017.
@@ -24,7 +28,7 @@ public class Notification extends WebSocketClient {
 
     @Override
     public void onMessage( String message ) {
-        System.out.println( "received: " + message );
+        MainActivity.notificationPop(MainActivity.na,"Friend Activity!",message);
     }
 
     @Override

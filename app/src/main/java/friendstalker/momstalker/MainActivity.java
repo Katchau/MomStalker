@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     String currLocation = null;
     private LocationManager lManager;
     private boolean isProviderActive = true;
+    public static MainActivity na = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(AndroidUser.user == null) return;
                 isProviderActive = !isProviderActive;
                 if(isProviderActive){
                     Snackbar.make(view, "Location is Activated!", Snackbar.LENGTH_LONG)
@@ -78,7 +80,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        notificationTest();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -100,19 +101,20 @@ public class MainActivity extends AppCompatActivity
             changeDisplayUser();
         if(NotificationClient.c == null)
             new NotificationClient();
+        if(na == null)na = this;
     }
 
-    public void notificationTest(){
+    public static void notificationPop(Activity ac, String title, String text){
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
+                new NotificationCompat.Builder(ac)
                         .setSmallIcon(R.drawable.ic_menu_send)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
+                        .setContentTitle(title)
+                        .setContentText(text);
         // Sets an ID for the notification
         int mNotificationId = 001;
 // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                (NotificationManager) ac.getSystemService(NOTIFICATION_SERVICE);
 // Builds the notification and issues it.
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
@@ -176,6 +178,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(log);
             }
             else{
+                NotificationClient.logOut(AndroidUser.user.name);
                 AndroidUser.resetVars();
                 Intent refresh = new Intent(this, MainActivity.class);
                 startActivity(refresh);
@@ -187,10 +190,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.eventmenu) {
             Intent event = new Intent(this,EventsActivity.class);
             startActivity(event);
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
